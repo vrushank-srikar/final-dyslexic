@@ -1,0 +1,297 @@
+/* Child Login Styles */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Bubblegum+Sans&display=swap");
+
+.login-body {
+  width: 100%;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #6e8efb, #a777e3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Poppins", sans-serif;
+  padding: 20px;
+  margin: 0;
+  overflow-x: hidden;
+}
+
+.container {
+  position: relative;
+  width: 100%;
+  max-width: 550px;
+  padding: 20px;
+  transform: scale(1);
+  transition: transform 0.3s ease;
+}
+
+.container:hover {
+  transform: scale(1.02);
+}
+
+.login-box {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 24px;
+  padding: 50px 40px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.login-box:hover {
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+}
+
+.character {
+  width: 150px;
+  height: 150px;
+  margin: 0 auto;
+  display: block;
+  vertical-align: top;
+  animation: float 4s ease-in-out infinite;
+  position: relative;
+  bottom: 0; /* Adjust if needed to overlap slightly */
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-10px) rotate(2deg);
+  }
+  50% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  75% {
+    transform: translateY(-5px) rotate(-2deg);
+  }
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+}
+
+.login-box h2 {
+  color: #5a67d8;
+  font-size: 36px;
+  margin: 0 0 30px 0;
+  padding-top: 0;
+  line-height: 1; /* Minimize vertical space */
+  font-weight: 700;
+  font-family: "Bubblegum Sans", cursive;
+  text-shadow: 2px 2px 0px rgba(110, 142, 251, 0.2);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.input-box {
+  width: 100%;
+  padding: 18px;
+  margin-bottom: 25px;
+  border: 3px solid #e2e8f0;
+  border-radius: 15px;
+  font-size: 18px;
+  transition: all 0.3s;
+  outline: none;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.input-box:focus {
+  border-color: #6e8efb;
+  box-shadow: 0 5px 20px rgba(110, 142, 251, 0.4);
+  transform: translateY(-2px);
+}
+
+.digit-boxes {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 30px;
+}
+
+.digit-box {
+  width: 55px;
+  height: 65px;
+  border: 3px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 28px;
+  text-align: center;
+  transition: all 0.3s;
+  outline: none;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.digit-box:focus {
+  border-color: #6e8efb;
+  box-shadow: 0 5px 20px rgba(110, 142, 251, 0.4);
+  transform: translateY(-3px) scale(1.05);
+}
+
+.error-message {
+  color: #e53e3e;
+  margin-bottom: 20px;
+  font-size: 16px;
+  min-height: 24px;
+  font-weight: 500;
+}
+
+.login-btn {
+  width: 100%;
+  padding: 18px;
+  background: linear-gradient(to right, #6e8efb, #a777e3);
+  border: none;
+  border-radius: 15px;
+  color: white;
+  font-size: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.4s;
+  margin-bottom: 25px;
+  box-shadow: 0 10px 20px rgba(110, 142, 251, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.login-btn:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: 0.5s;
+}
+
+.login-btn:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(110, 142, 251, 0.5);
+}
+
+.login-btn:hover:before {
+  left: 100%;
+}
+
+.login-btn:active {
+  transform: translateY(0);
+}
+
+.options {
+  display: flex;
+  justify-content: space-between;
+  font-size: 16px;
+  color: #718096;
+}
+
+.options label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.options label:hover {
+  color: #5a67d8;
+}
+
+.options input[type="checkbox"] {
+  margin-right: 8px;
+  transform: scale(1.2);
+}
+
+.options a {
+  color: #6e8efb;
+  text-decoration: none;
+  transition: all 0.3s;
+  font-weight: 500;
+}
+
+.options a:hover {
+  color: #a777e3;
+  text-decoration: underline;
+  transform: translateY(-2px);
+}
+
+.admin-btn,
+.superadmin-btn {
+  position: absolute;
+  bottom: -60px;
+  padding: 12px 25px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 30px;
+  color: #5a67d8;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.3s;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+}
+
+.admin-btn {
+  left: 20px;
+}
+
+.superadmin-btn {
+  right: 20px;
+}
+
+.admin-btn:hover,
+.superadmin-btn:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2);
+  background: #5a67d8;
+  color: white;
+}
+
+@media (max-width: 480px) {
+  .login-box {
+    padding: 40px 25px;
+  }
+
+  .digit-box {
+    width: 45px;
+    height: 55px;
+    font-size: 24px;
+  }
+
+  .admin-btn,
+  .superadmin-btn {
+    bottom: -50px;
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+
+  .character {
+    width: 120px;
+    height: 120px;
+  }
+}
+
+@media (max-width: 360px) {
+  .digit-boxes {
+    gap: 8px;
+  }
+
+  .digit-box {
+    width: 40px;
+    height: 50px;
+    font-size: 20px;
+  }
+
+  .character {
+    width: 100px;
+    height: 100px;
+  }
+}

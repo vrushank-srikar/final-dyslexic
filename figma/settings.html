@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JoyVerse</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Italianno&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      background: #FFFFFF;
+    }
+    .sidebar {
+      width: 250px;
+      background: #EFEFEF;
+      height: 100vh;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .sidebar .logo {
+      margin-bottom: 40px;
+      display: flex;
+      align-items: center;
+      font-family: 'Italianno', cursive;
+      font-size: 28px;
+      font-weight: 400;
+      color: #000;
+    }
+    .sidebar .logo img {
+      width: 24px;
+      height: 24px;
+      margin-right: 8px;
+    }
+    .sidebar .menu-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      margin: 5px 0;
+      color: #1e3a8a;
+      text-decoration: none;
+      font-size: 16px;
+      border-radius: 8px;
+    }
+    .sidebar .menu-item.active {
+      background: #D6D6D6;
+    }
+    .sidebar .menu-item svg {
+      margin-right: 10px;
+    }
+    .sidebar .profile {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      font-size: 14px;
+    }
+    .sidebar .profile img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+    .main-content {
+      flex-grow: 1;
+      padding: 20px;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .header .search-bar {
+      padding: 10px 20px;
+      border-radius: 20px;
+      border: 1px solid #ccc;
+      width: 200px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+    }
+    .header .theme-toggle {
+      padding: 5px 10px;
+      border-radius: 20px;
+      border: 1px solid #ccc;
+      display: flex;
+      gap: 5px;
+      font-size: 16px;
+    }
+    .patient-details h2 {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      width: 200px;
+    }
+    .forms {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    /* .form-card {
+      background: #EFEFEF;
+      padding: 20px;
+      border-radius: 12px;
+      width: 300px;
+    }
+    .form-card h3 {
+      font-size: 18px;
+      font-weight: 500;
+      margin-bottom: 15px;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 20px;
+      border: 1px solid #ccc;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      background: #F5F5F5;
+    }
+    .form-card button {
+      width: 100%;
+      padding: 10px;
+      border-radius: 20px;
+      border: none;
+      background: #D6D6D6;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      cursor: pointer;
+    } */
+    .patient-info {
+      background: #EFEFEF;
+      padding: 20px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-top: 20px;
+    }
+    .patient-info img {
+      width: 900px;
+      height: 20px;
+      border-radius: 50%;
+    }
+    .patient-info .details {
+      flex-grow: 1;
+    }
+    .patient-info .details span {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+    .patient-info .details .user-id {
+      font-weight: 500;
+      color: #1e3a8a;
+    }
+    .patient-info .details .name {
+      font-weight: 600;
+    }
+    .settings-form {
+  background: #EFEFEF;
+  padding: 20px;
+  border-radius: 12px;
+  max-width: 500px;
+}
+
+.settings-form form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.profile-pic-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.profile-pic-section img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ccc;
+}
+
+.profile-pic-section input[type="file"] {
+  font-size: 14px;
+}
+
+.form-group label {
+  font-size: 14px;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  background: #fff;
+}
+
+.settings-form button {
+  padding: 10px;
+  border-radius: 20px;
+  border: none;
+  background: #1e3a8a;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.settings-form button:hover {
+  background: #16357c;
+}
+
+
+    .patient-info button {
+      padding: 10px 20px;
+      border-radius: 20px;
+      border: none;
+      background: #EFEFEF;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div>
+      <div class="logo">
+        <img src="logo1.png" alt="JoyVerse Logo"> <!-- Replace with your logo path -->
+        JoyVerse
+      </div>
+      <a href="#" class="menu-item active">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1e3a8a" stroke-width="2">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+        </svg>
+        Home
+      </a>
+      <a href="#" class="menu-item">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1e3a8a" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+        </svg>
+        Patients
+      </a>
+      <a href="#" class="menu-item">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1e3a8a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 2H15V4H19A2 2 0 0 1 21 6V20A2 2 0 0 1 19 22H5A2 2 0 0 1 3 20V6A2 2 0 0 1 5 4H9V2Z"></path>
+          <path d="M9 12H15"></path>
+          <path d="M9 16H15"></path>
+        </svg>
+        Reports
+      </a>
+      
+      <a href="#" class="menu-item">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1e3a8a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.09A1.65 1.65 0 0 0 9 3.09V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.09a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+        Settings
+      </a>
+      
+      <a href="#" class="menu-item">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1e3a8a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+          <polyline points="22,6 12,13 2,6"></polyline>
+        </svg>
+        Contact Us
+      </a>
+    </div>
+    <div class="profile">
+      <!-- Replace with your profile image -->
+      <img src="https://via.placeholder.com/40" alt="Profile">
+      <div>
+        <div>Christie .M</div>
+        <div style="font-size: 12px; color: #666;">Psychologist</div>
+      </div>
+    </div>
+  </div>
+  <div class="main-content">
+    <div class="header">
+      <input type="text" class="search-bar" placeholder="Search Anything">
+      <div class="theme-toggle">🌙 ☀️</div>
+    </div>
+  
+    <div class="patient-details">
+      <h2>Settings</h2>
+      <div class="settings-form">
+        <form>
+          <div class="profile-pic-section">
+            <img src="https://via.placeholder.com/80" alt="Profile Picture" id="preview-img">
+            <input type="file" accept="image/*" onchange="previewImage(event)">
+          </div>
+  
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" placeholder="Enter your name">
+          </div>
+  
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="Enter your email">
+          </div>
+  
+          <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" placeholder="Enter your phone number">
+          </div>
+  
+          <button type="submit">Update</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  
+      
+  </div>
+</body>
+</html>
