@@ -555,11 +555,13 @@ import videoFile from '../assets/video.mp4'; // Background video for welcome scr
 import dogImage from '../assets/dog.png'; // Image for dog word
 import catImage from '../assets/cat.png'; // Image for cat word
 import tigerImage from '../assets/tiger.png'; // Image for tiger word
-import zebraImage from '../assets/zebra.png'; // Image for zebra word
-import monkeyImage from '../assets/monkey.png'; // Image for monkey word
 import horseImage from '../assets/horse.png'; // Image for horse word
 import gameBackImage from '../assets/Gameback.jpg'; // Background image during gameplay
-import tigerLaughVideo from '../assets/tigerlaugh.mp4'; // Video for tiger when specific emotions are detected
+import tigerLaughVideo from '../assets/tigerlaugh.mp4';
+import catLaughVideo from '../assets/catlaugh.mp4';
+import dogLaughVideo from '../assets/doglaugh.mp4';
+import horseLaughVideo from '../assets/horselaugh.mp4';
+
 import useEmotionDetection from './EmotionDetection/useEmotionDetection'; // Custom hook for emotion detection
 
 const Game = () => {
@@ -792,11 +794,23 @@ const Game = () => {
   };
 
   // Determine if the tiger laugh video should be shown (for tiger word with happy, angry, or sad emotion)
-  const shouldShowTigerVideo =
-    currentWord &&
-    currentWord.correct === 'tiger' &&
-    currentEmotion &&
-    ['happy', 'angry', 'sad'].includes(currentEmotion.toLowerCase());
+const emotionVideoMap = {
+  tiger: tigerLaughVideo,
+  cat: catLaughVideo,
+  dog: dogLaughVideo,
+  horse: horseLaughVideo,
+};
+
+const shouldShowEmotionVideo =
+  currentWord &&
+  emotionVideoMap[currentWord.correct] &&
+  currentEmotion &&
+  ['happy', 'angry', 'sad'].includes(currentEmotion.toLowerCase());
+
+  const currentEmotionVideo = shouldShowEmotionVideo
+    ? emotionVideoMap[currentWord.correct]
+    : null;
+
 
   return (
     <div
@@ -858,7 +872,7 @@ const Game = () => {
       {/* Emotion display element */}
       <div
         ref={emotionDisplayRef}
-        style={{ position: 'absolute', top: '10px', left: '10px', color: 'white', zIndex: 2 }}
+        style={{ position: 'absolute', top: '10px', left: '10px', color: 'black', zIndex: 2 }}
       />
 
       <div className="content">
@@ -875,24 +889,22 @@ const Game = () => {
             <h1>What is this animal?</h1>
             <div className="animal-container">
               {currentWord && (
-                shouldShowTigerVideo ? (
-                  // Show tiger laugh video for specific emotions
+                currentEmotionVideo ? (
                   <video
                     autoPlay
                     loop
                     muted
                     playsInline
                     className="animal-video"
-                    src={tigerLaughVideo}
-                    type="video/mp4"
                   >
+                    <source src={currentEmotionVideo} type="video/mp4" />
                     Your browser does not support the video tag.
                   </video>
                 ) : (
-                  // Show static animal image otherwise
                   <img src={currentWord.image} alt="Animal" className="animal-image" />
                 )
               )}
+
             </div>
 
             {/* Render draggable letters */}
