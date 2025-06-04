@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import { login } from '../utils/auth';
 import '../styles/superadminlogin.css';
 
 const SuperAdminLogin = () => {
@@ -19,12 +19,10 @@ const SuperAdminLogin = () => {
 
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:3000/superadmin/login', { email, password });
-      localStorage.setItem('superadmin_token', response.data.token);
-      setErrorMessage('');
+      await login('superadmin', { email, password });
       navigate('/superadmin');
     } catch (error) {
-      setErrorMessage(error.response?.data?.message || 'Login failed');
+      setErrorMessage(error.message);
     } finally {
       setLoading(false);
     }
@@ -39,14 +37,14 @@ const SuperAdminLogin = () => {
             type="email"
             placeholder="Email"
             value={email}
-            onChange={e => setEmail(e.target.value)}
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
           <input
             type="password"
             placeholder="Password"
             value={password}
-            onChange={e => setPassword(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
             required
           />
           <button type="submit" disabled={loading}>

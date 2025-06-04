@@ -132,7 +132,7 @@ def train_model():
     learning_rate = 0.0001  # Learning rate for optimizer
 
     # Load dataset
-    dataset_path = 'JoyVerseDataSet_Filled.xlsx'
+    dataset_path = 'AImodel\JoyVerseDataSet_Filled.xlsx'
     print(f"Resolved dataset path: {os.path.abspath(dataset_path)}")
     features, labels, label_encoder, mean, std = load_data(dataset_path)
     n_classes = len(label_encoder.classes_)

@@ -547,59 +547,45 @@
 
 // Game.js: Main component for the word unscramble game with emotion detection and video/image switching
 import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios'; // For making HTTP requests to the backend
-import JSConfetti from 'js-confetti'; // For confetti animation on game completion
-import { useNavigate } from 'react-router-dom'; // For programmatic navigation
-import '../styles/game.css'; // Styles for the game UI
-import videoFile from '../assets/video.mp4'; // Background video for welcome screen
-import dogImage from '../assets/dog.png'; // Image for dog word
-import catImage from '../assets/cat.png'; // Image for cat word
-import tigerImage from '../assets/tiger.png'; // Image for tiger word
-import horseImage from '../assets/horse.png'; // Image for horse word
-import gameBackImage from '../assets/Gameback.jpg'; // Background image during gameplay
+import axios from 'axios';
+import JSConfetti from 'js-confetti';
+import { useNavigate } from 'react-router-dom';
+import '../styles/game.css';
+import videoFile from '../assets/video.mp4';
+import dogImage from '../assets/dog.png';
+import catImage from '../assets/cat.png';
+import tigerImage from '../assets/tiger.png';
+import zebraImage from '../assets/zebra.png';
+import monkeyImage from '../assets/monkey.png';
+import horseImage from '../assets/horse.png';
+import gameBackImage from '../assets/Gameback.jpg';
 import tigerLaughVideo from '../assets/tigerlaugh.mp4';
-import catLaughVideo from '../assets/catlaugh.mp4';
-import dogLaughVideo from '../assets/doglaugh.mp4';
-import horseLaughVideo from '../assets/horselaugh.mp4';
-
-import useEmotionDetection from './EmotionDetection/useEmotionDetection'; // Custom hook for emotion detection
+import happyDogGIF from '../assets/Happy_Dog_GIF.gif';
+import useEmotionDetection from './EmotionDetection/useEmotionDetection';
 
 const Game = () => {
-  // State to track if the game has started
   const [gameStarted, setGameStarted] = useState(false);
-  // State to track if the game is completed (all words answered correctly)
   const [gameCompleted, setGameCompleted] = useState(false);
-  // State to track the current word index in the shuffled words array
   const [wordIndex, setWordIndex] = useState(0);
-  // State to store the shuffled array of words
   const [shuffledWords, setShuffledWords] = useState([]);
-  // State to store the current word object (correct, jumbled, image)
   const [currentWord, setCurrentWord] = useState(null);
-  // State to store the jumbled letters of the current word
   const [letters, setLetters] = useState([]);
-  // State to store the letters dropped into drop zones
   const [dropZones, setDropZones] = useState([]);
-  // State to track the player's score
   const [score, setScore] = useState(0);
-  // State to display feedback (e.g., "Correct!" or "Try Again!")
   const [feedback, setFeedback] = useState(null);
-  // State to store the current detected emotion
   const [currentEmotion, setCurrentEmotion] = useState(null);
-  // State to store all emotions detected for the current question
   const [questionEmotions, setQuestionEmotions] = useState([]);
-  // State to store the most recent game report
   const [recentReport, setRecentReport] = useState(null);
-  // State to store any error message when fetching the report
   const [reportError, setReportError] = useState(null);
+  const [isGameRunning, setIsGameRunning] = useState(false);
+  const [readyToNavigate, setReadyToNavigate] = useState(false);
 
-  // Refs for video, canvas, emotion display, and confetti
-  const videoRef = useRef(null); // Ref for webcam video feed (hidden)
-  const canvasRef = useRef(null); // Ref for canvas to render video feed
-  const emotionDisplayRef = useRef(null); // Ref for displaying emotion data
-  const confettiRef = useRef(null); // Ref for JSConfetti instance
-  const navigate = useNavigate(); // Hook for navigation
+  const videoRef = useRef(null);
+  const canvasRef = useRef(null);
+  const emotionDisplayRef = useRef(null);
+  const confettiRef = useRef(null);
+  const navigate = useNavigate();
 
-  // Define background colors for different emotions (used for overlay)
   const emotionColors = {
     happy: 'rgba(167, 139, 250, 0.3)', // Soft purple
     sad: 'rgba(253, 186, 116, 0.3)', // Warm peach
@@ -610,35 +596,44 @@ const Game = () => {
     neutral: 'rgba(255, 245, 235, 0.3)', // Light cream
   };
 
-  // Initialize JSConfetti on component mount
   useEffect(() => {
     confettiRef.current = new JSConfetti();
   }, []);
 
-  // Handle game completion: trigger confetti and redirect to login
   useEffect(() => {
+    if (gameStarted && !gameCompleted) {
+      setIsGameRunning(true);
+    }
     if (gameCompleted) {
-      // Show confetti animation with custom emojis and colors
+      setIsGameRunning(false); // Stop camera
       confettiRef.current.addConfetti({
-        emojis: ['🎉', '🥳', '✨'],
-        confettiRadius: 6,
-        confettiNumber: 125,
-        confettiColors: ['#ff0a54', '#ff477e', '#ff85a1', '#6e8efb', '#a777e3'],
+        confettiColors: ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEEAD'], // Vibrant colors
+        confettiRadius: 6, // Larger particles
+        confettiNumber: 300, // High density
+        spread: 80, // Full-screen effect
+        origin: { y: 0.5 }, // Centered
       });
+      // UPDATE: Increased cleanup delay to 1000ms
+      const cleanupTimer = setTimeout(() => {
+        setReadyToNavigate(true);
+      }, 1000); // Allow time for camera cleanup
 
-      // Redirect to login page after 5 seconds and clear local storage
-      const timer = setTimeout(() => {
+      return () => clearTimeout(cleanupTimer);
+    }
+  }, [gameStarted, gameCompleted]);
+
+  useEffect(() => {
+    if (readyToNavigate) {
+      const navigationTimer = setTimeout(() => {
         localStorage.removeItem('child_token');
         localStorage.removeItem('userId');
         navigate('/');
-      }, 5000);
+      }, 4000); // 5s total - 1000ms cleanup = 4000ms
 
-      // Cleanup timer on unmount
-      return () => clearTimeout(timer);
+      return () => clearTimeout(navigationTimer);
     }
-  }, [gameCompleted, navigate]);
+  }, [readyToNavigate, navigate]);
 
-  // Fetch the most recent game report when the game is completed
   useEffect(() => {
     if (gameCompleted) {
       const fetchRecentReport = async () => {
@@ -649,7 +644,6 @@ const Game = () => {
             throw new Error('User not logged in');
           }
 
-          // Fetch the latest game report for the user
           const response = await axios.get(`http://localhost:3000/child/game-reports/${userId}`, {
             headers: { Authorization: `Bearer ${token}` },
             params: { limit: 1 },
@@ -666,24 +660,20 @@ const Game = () => {
     }
   }, [gameCompleted]);
 
-  // Handle emotions collected from the emotion detection hook
   const handleEmotionsCollected = (emotions) => {
-    setQuestionEmotions(emotions); // Store all detected emotions
-    // Count occurrences of each emotion
+    setQuestionEmotions(emotions);
     const emotionCounts = emotions.reduce((acc, emotion) => {
       acc[emotion] = (acc[emotion] || 0) + 1;
       return acc;
     }, {});
-    // Determine the dominant emotion
     const dominantEmotion = Object.keys(emotionCounts).reduce((a, b) =>
       emotionCounts[a] > emotionCounts[b] ? a : b
     );
-    setCurrentEmotion(dominantEmotion.toLowerCase()); // Update current emotion
+    setCurrentEmotion(dominantEmotion.toLowerCase());
 
     const userId = localStorage.getItem('userId');
     if (!userId || !currentWord) return;
 
-    // Save the dominant emotion to the backend
     axios
       .post(
         'http://localhost:3000/child/save-emotion',
@@ -700,10 +690,8 @@ const Game = () => {
       .catch((error) => console.error('Error saving emotion:', error));
   };
 
-  // Apply emotion detection hook to process webcam feed
-  useEmotionDetection(videoRef, canvasRef, emotionDisplayRef, gameStarted, handleEmotionsCollected);
+  useEmotionDetection(videoRef, canvasRef, emotionDisplayRef, isGameRunning, handleEmotionsCollected);
 
-  // Define the words array with correct words, jumbled letters, and associated images
   const words = [
     { correct: 'dog', jumbled: 'gdo', image: dogImage },
     { correct: 'cat', jumbled: 'tac', image: catImage },
@@ -711,47 +699,40 @@ const Game = () => {
     { correct: 'horse', jumbled: 'soehr', image: horseImage },
   ];
 
-  // Shuffle words on component mount
   useEffect(() => {
     setShuffledWords([...words].sort(() => Math.random() - 0.5));
   }, []);
 
-  // Update current word, letters, and drop zones when word index or shuffled words change
   useEffect(() => {
     if (shuffledWords.length > 0) {
       const word = shuffledWords[wordIndex];
       setCurrentWord(word);
-      setLetters(word.jumbled.split('')); // Split jumbled word into individual letters
-      setDropZones(Array(word.correct.length).fill(null)); // Initialize empty drop zones
-      setQuestionEmotions([]); // Reset emotions for new question
+      setLetters(word.jumbled.split(''));
+      setDropZones(Array(word.correct.length).fill(null));
+      setQuestionEmotions([]);
     }
   }, [wordIndex, shuffledWords]);
 
-  // Handle drag start event for draggable letters
   const handleDragStart = (e, letter) => {
     e.dataTransfer.setData('text/plain', letter);
   };
 
-  // Allow dropping by preventing default behavior
   const handleDragOver = (e) => {
     e.preventDefault();
   };
 
-  // Handle drop event when a letter is dropped into a drop zone
   const handleDrop = (e, index) => {
     e.preventDefault();
     const letter = e.dataTransfer.getData('text/plain');
     const newDropZones = [...dropZones];
-    newDropZones[index] = letter; // Place letter in the drop zone
+    newDropZones[index] = letter;
     setDropZones(newDropZones);
 
-    // Check if all drop zones are filled
     if (newDropZones.every((zone) => zone !== null)) {
-      const arrangedWord = newDropZones.join(''); // Form the arranged word
-      const isCorrect = arrangedWord === currentWord.correct; // Check if correct
-      const newScore = isCorrect ? score + 1 : score; // Update score if correct
+      const arrangedWord = newDropZones.join('');
+      const isCorrect = arrangedWord === currentWord.correct;
+      const newScore = isCorrect ? score + 1 : score;
 
-      // Save game progress to the backend
       axios
         .post(
           'http://localhost:3000/child/save-game',
@@ -773,9 +754,8 @@ const Game = () => {
         setFeedback('Correct!');
         setScore(newScore);
         if (newScore >= words.length) {
-          setGameCompleted(true); // End game if all words are correct
+          setGameCompleted(true);
         } else {
-          // Move to next word after 1 second
           setTimeout(() => {
             setWordIndex((prev) => prev + 1);
             setFeedback(null);
@@ -784,7 +764,6 @@ const Game = () => {
         }
       } else {
         setFeedback('Try Again!');
-        // Reset drop zones after 1 second
         setTimeout(() => {
           setDropZones(Array(currentWord.correct.length).fill(null));
           setFeedback(null);
@@ -793,24 +772,17 @@ const Game = () => {
     }
   };
 
-  // Determine if the tiger laugh video should be shown (for tiger word with happy, angry, or sad emotion)
-const emotionVideoMap = {
-  tiger: tigerLaughVideo,
-  cat: catLaughVideo,
-  dog: dogLaughVideo,
-  horse: horseLaughVideo,
-};
+  const shouldShowTigerVideo =
+    currentWord &&
+    currentWord.correct === 'tiger' &&
+    currentEmotion &&
+    ['happy', 'angry', 'sad'].includes(currentEmotion.toLowerCase());
 
-const shouldShowEmotionVideo =
-  currentWord &&
-  emotionVideoMap[currentWord.correct] &&
-  currentEmotion &&
-  ['happy', 'angry', 'sad'].includes(currentEmotion.toLowerCase());
-
-  const currentEmotionVideo = shouldShowEmotionVideo
-    ? emotionVideoMap[currentWord.correct]
-    : null;
-
+  const shouldShowDogGIF =
+    currentWord &&
+    currentWord.correct === 'dog' &&
+    currentEmotion &&
+    ['sad', 'neutral'].includes(currentEmotion.toLowerCase());
 
   return (
     <div
@@ -826,7 +798,6 @@ const shouldShowEmotionVideo =
           : {}
       }
     >
-      {/* Show background video before game starts */}
       {!gameStarted && (
         <video autoPlay loop muted playsInline className="background-video">
           <source src={videoFile} type="video/mp4" />
@@ -834,7 +805,6 @@ const shouldShowEmotionVideo =
         </video>
       )}
 
-      {/* Apply emotion-based background overlay */}
       {currentEmotion && (
         <div
           style={{
@@ -850,10 +820,10 @@ const shouldShowEmotionVideo =
         />
       )}
 
-      {/* Hidden webcam feed for emotion detection */}
+      {/* UPDATE: Keep video and canvas mounted to prevent null refs */}
       <video
         ref={videoRef}
-        style={{ display: 'none' }}
+        style={{ display: isGameRunning ? 'none' : 'none' }} // Always mounted, hidden
         autoPlay
         playsInline
         muted
@@ -861,22 +831,29 @@ const shouldShowEmotionVideo =
         height="480"
       />
 
-      {/* Canvas for rendering video feed */}
       <canvas
         ref={canvasRef}
-        style={{ position: 'absolute', top: 0, left: 0, zIndex: 1 }}
+        style={{ position: 'absolute', top: 0, left: 0, zIndex: 1, display: isGameRunning ? 'block' : 'none' }}
         width="640"
         height="480"
       />
 
-      {/* Emotion display element */}
+      {/* UPDATE: Ensure emotionDisplayRef is always mounted */}
       <div
         ref={emotionDisplayRef}
-        style={{ position: 'absolute', top: '10px', left: '10px', color: 'black', zIndex: 2 }}
-      />
+        style={{
+          position: 'absolute',
+          top: '10px',
+          left: '10px',
+          color: 'white',
+          zIndex: 2,
+          display: isGameRunning || gameCompleted ? 'block' : 'none', // Keep during completion
+        }}
+      >
+        Emotion: N/A {/* Fallback text */}
+      </div>
 
       <div className="content">
-        {/* Welcome screen before game starts */}
         {!gameStarted ? (
           <>
             <h1>Welcome to the Game</h1>
@@ -889,25 +866,26 @@ const shouldShowEmotionVideo =
             <h1>What is this animal?</h1>
             <div className="animal-container">
               {currentWord && (
-                currentEmotionVideo ? (
+                shouldShowTigerVideo ? (
                   <video
                     autoPlay
                     loop
                     muted
                     playsInline
                     className="animal-video"
+                    src={tigerLaughVideo}
+                    type="video/mp4"
                   >
-                    <source src={currentEmotionVideo} type="video/mp4" />
                     Your browser does not support the video tag.
                   </video>
+                ) : shouldShowDogGIF ? (
+                  <img src={happyDogGIF} alt="Happy Dog" className="animal-image" />
                 ) : (
                   <img src={currentWord.image} alt="Animal" className="animal-image" />
                 )
               )}
-
             </div>
 
-            {/* Render draggable letters */}
             <div className="letters-container">
               {letters.map((letter, index) => (
                 <div
@@ -921,7 +899,6 @@ const shouldShowEmotionVideo =
               ))}
             </div>
 
-            {/* Render drop zones */}
             <div className="dropzones-container">
               {dropZones.map((zone, index) => (
                 <div
@@ -935,7 +912,6 @@ const shouldShowEmotionVideo =
               ))}
             </div>
 
-            {/* Display feedback message */}
             {feedback && (
               <p className={`feedback ${feedback === 'Correct!' ? 'correct' : 'wrong'}`}>
                 {feedback}
@@ -944,14 +920,12 @@ const shouldShowEmotionVideo =
             <p className="score">Score: {score}</p>
           </div>
         ) : (
-          // Game completion screen
           <div className="game-content">
             <h1>Congratulations! You Won!</h1>
             <p className="score">Final Score: {score}</p>
             {reportError ? (
               <p className="report-error">{reportError}</p>
             ) : recentReport ? (
-              // Display recent game report
               <div className="report-details">
                 <h2>Latest Game Report</h2>
                 <p><strong>Animal:</strong> {recentReport.question}</p>
